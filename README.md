@@ -2,28 +2,33 @@
 
 DIAGRAMA BLOC
 
+```mermaid
 graph TD
-    subgraph "Power Supply"
-        Bat[Li-Po Battery 3.7V] --> Charger[TP4056 Charger]
-        Charger --> Vreg[Voltage Regulator 3.3V]
+    subgraph "Power Management"
+        USB[Port USB-C] --> Charger[BQ25180 Charger]
+        Charger --> Bat[Baterie Li-Po]
+        Bat --> FG[MAX17048 Fuel Gauge]
+        Bat --> Vreg[RT6160 Regulator 3.3V]
     end
 
-    subgraph "Processing Unit"
-        MCU((nRF52840))
+    subgraph "Unitate Centrală"
+        MCU((nRF52840<br>MCU + BLE))
     end
 
-    subgraph "Peripherals"
-        Disp[Display E-Ink / OLED]
-        BT[Bluetooth Low Energy]
-        Acc[Accelerometer/Sensor]
+    subgraph "Periferice"
+        Disp[Ecran E-Paper]
+        IMU[BMA423 Accelerometru]
+        Haptic[DRV2605 Vibrații]
+        Btns[Butoane Tactile]
     end
 
     Vreg --> MCU
     Vreg --> Disp
-    MCU -- SPI/I2C --> Disp
-    MCU -- I2C --> Acc
-    Bat -- ADC --> MCU
-
+    MCU -- SPI --> Disp
+    MCU -- I2C --> IMU
+    MCU -- I2C --> FG
+    MCU -- I2C --> Haptic
+    Btns -- GPIO --> MCU
 
 ### Bill of Materials (BOM)
 
